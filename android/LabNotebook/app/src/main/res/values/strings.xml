@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lab//Notebook</string>
+    <string name="help_title">User Manual</string>
+    <string name="about_title">Lab//Notebook</string>
+    <string name="about_message">Electronics Lab Notebook\nSchematic Editor v1.0\n\nProject: AM_receiver_20260405\nBuilt: 2026-04-05\n\nCross-device field engineering notebook.\nGitHub: JohnDWilbourn/electronics-lab</string>
+
+    <!-- Menu items -->
+    <string name="menu_new">New Schematic</string>
+    <string name="menu_import">Import JSON…</string>
+    <string name="menu_export_json">Export JSON</string>
+    <string name="menu_export_svg">Export SVG</string>
+    <string name="menu_help">Help</string>
+    <string name="menu_about">About</string>
+</resources>

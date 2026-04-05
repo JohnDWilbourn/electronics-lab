@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme — dark, matches web editor palette -->
+    <style name="Theme.LabNotebook" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="android:statusBarColor">@color/bg</item>
+        <item name="android:navigationBarColor">@color/panel</item>
+        <item name="android:textColor">@color/text</item>
+    </style>
+
+    <!-- Popup menu theme for overflow menu -->
+    <style name="ThemeOverlay.LabNotebook.Popup" parent="ThemeOverlay.MaterialComponents.Dark">
+        <item name="android:colorBackground">@color/panel</item>
+        <item name="android:textColor">@color/text</item>
+    </style>
+
+</resources>

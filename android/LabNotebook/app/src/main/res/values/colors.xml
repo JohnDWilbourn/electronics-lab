@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Core palette — mirrors CSS variables in the web editor -->
+    <color name="bg">#0A0D0F</color>
+    <color name="panel">#111519</color>
+    <color name="border">#1E2830</color>
+    <color name="accent">#00E5FF</color>
+    <color name="accent2">#FF6B00</color>
+    <color name="green">#39FF14</color>
+    <color name="yellow">#FFD600</color>
+    <color name="text">#C8D8E0</color>
+    <color name="dim">#4A6070</color>
+
+    <!-- Material theme overrides -->
+    <color name="colorPrimary">#111519</color>
+    <color name="colorPrimaryDark">#0A0D0F</color>
+    <color name="colorAccent">#00E5FF</color>
+    <color name="colorSurface">#111519</color>
+    <color name="colorOnSurface">#C8D8E0</color>
+</resources>

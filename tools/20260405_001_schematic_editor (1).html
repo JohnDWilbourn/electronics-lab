@@ -419,7 +419,7 @@
   <button class="tb-btn" onclick="exportSVG()">EXPORT SVG</button>
   <div class="tb-sep"></div>
   <button class="tb-btn danger" onclick="clearAll()">CLEAR</button>
-  <div id="project-name" id="project-name-display">AM_receiver_20260405</div>
+  <div id="project-name">AM_receiver_20260405</div>
   <div id="status-dot"></div>
 </div>
 
@@ -587,8 +587,8 @@ const COMPONENT_LIBRARY = [
 // STATE
 // ════════════════════════════════════════════════════════
 
-let components = [];   // placed components
-let wires = [];        // [{x1,y1,x2,y2}]
+let components = [];
+let wires = [];
 let nextId = 1;
 let tool = 'select';
 
@@ -600,6 +600,7 @@ const GRID = 20;
 let isDragging = false;
 let dragComp = null;
 let dragOffX = 0, dragOffY = 0;
+let dragOrigX = 0, dragOrigY = 0;  // for collision snap-back
 let isPanning = false;
 let panStartX = 0, panStartY = 0;
 let panOriginX = 0, panOriginY = 0;
@@ -641,7 +642,6 @@ function resizeCanvases() {
 window.addEventListener('resize', resizeCanvases);
 resizeCanvases();
 
-// Initial view center
 viewX = wrap.clientWidth / 2;
 viewY = wrap.clientHeight / 2;
 
@@ -650,17 +650,11 @@ viewY = wrap.clientHeight / 2;
 // ════════════════════════════════════════════════════════
 
 function screenToWorld(sx, sy) {
-  return {
-    x: (sx - viewX) / viewScale,
-    y: (sy - viewY) / viewScale
-  };
+  return { x: (sx - viewX) / viewScale, y: (sy - viewY) / viewScale };
 }
 
 function worldToScreen(wx, wy) {
-  return {
-    x: wx * viewScale + viewX,
-    y: wy * viewScale + viewY
-  };
+  return { x: wx * viewScale + viewX, y: wy * viewScale + viewY };
 }
 
 function snapToGrid(v) {
@@ -670,6 +664,23 @@ function snapToGrid(v) {
 function canvasXY(e) {
   const r = schCanvas.getBoundingClientRect();
   return { x: e.clientX - r.left, y: e.clientY - r.top };
+}
+
+// ════════════════════════════════════════════════════════
+// COLLISION DETECTION
+// ════════════════════════════════════════════════════════
+
+function wouldCollide(x, y, excludeId) {
+  for (const comp of components) {
+    if (comp.id === excludeId) continue;
+    const def = getLibDef(comp.type);
+    const hw = (def?.w || 40) / 2 + 10;
+    const hh = (def?.h || 30) / 2 + 10;
+    if (Math.abs(x - comp.x) < hw && Math.abs(y - comp.y) < hh) {
+      return true;
+    }
+  }
+  return false;
 }
 
 // ════════════════════════════════════════════════════════
@@ -696,7 +707,6 @@ function drawGrid() {
     gc.beginPath(); gc.moveTo(0, y); gc.lineTo(w, y); gc.stroke();
   }
 
-  // Major grid
   const major = step * 5;
   const msx = ((viewX % major) + major) % major;
   const msy = ((viewY % major) + major) % major;
@@ -743,11 +753,9 @@ function drawCapElec(ctx, comp) {
   ctx.moveTo(-20, 0); ctx.lineTo(-4, 0);
   ctx.moveTo(4, 0);  ctx.lineTo(20, 0);
   ctx.moveTo(-4, -10); ctx.lineTo(-4, 10);
-  // Curved plate for + side
   ctx.moveTo(4, -10);
   ctx.bezierCurveTo(8, -10, 8, 10, 4, 10);
   ctx.stroke();
-  // + sign
   ctx.fillStyle = comp.selected ? '#00e5ff' : '#c8d8e0';
   ctx.font = `${9/viewScale}px Share Tech Mono`;
   ctx.textAlign = 'center';
@@ -761,7 +769,6 @@ function drawInductor(ctx, comp) {
   ctx.moveTo(-30, 0); ctx.lineTo(-18, 0);
   ctx.moveTo(18, 0);  ctx.lineTo(30, 0);
   ctx.stroke();
-  // Arcs
   for (let i = 0; i < 4; i++) {
     ctx.beginPath();
     ctx.arc(-12 + i*8, 0, 5, Math.PI, 0);
@@ -806,19 +813,16 @@ function drawZener(ctx, comp) {
 
 function drawLED(ctx, comp) {
   drawDiode(ctx, comp);
-  // Light rays
   ctx.strokeStyle = comp.selected ? '#00e5ff' : '#ffd600';
   ctx.lineWidth = 1 / viewScale;
   ctx.beginPath();
   ctx.moveTo(-2, -12); ctx.lineTo(4, -18);
   ctx.moveTo(3, -10);  ctx.lineTo(9, -16);
   ctx.stroke();
-  // Arrows on rays
 }
 
 function drawVaricap(ctx, comp) {
   drawDiode(ctx, comp);
-  // Small capacitor lines next to cathode
   ctx.strokeStyle = comp.selected ? '#00e5ff' : '#c8d8e0';
   ctx.lineWidth = 1 / viewScale;
   ctx.beginPath();
@@ -831,19 +835,14 @@ function drawNPN(ctx, comp) {
   ctx.strokeStyle = comp.selected ? '#00e5ff' : '#c8d8e0';
   ctx.lineWidth = 1.5 / viewScale;
   ctx.beginPath();
-  // Base line
   ctx.moveTo(-20, 0); ctx.lineTo(-5, 0);
   ctx.moveTo(-5, -18); ctx.lineTo(-5, 18);
-  // Collector
   ctx.moveTo(-5, -10); ctx.lineTo(20, -15);
-  // Emitter
   ctx.moveTo(-5, 10); ctx.lineTo(20, 15);
   ctx.stroke();
-  // Emitter arrow
   ctx.beginPath();
   ctx.moveTo(14, 13); ctx.lineTo(20, 15); ctx.lineTo(16, 10);
   ctx.stroke();
-  // Circle
   ctx.beginPath();
   ctx.arc(0, 0, 18, 0, Math.PI*2);
   ctx.stroke();
@@ -858,7 +857,6 @@ function drawPNP(ctx, comp) {
   ctx.moveTo(-5, -10); ctx.lineTo(20, -15);
   ctx.moveTo(-5, 10); ctx.lineTo(20, 15);
   ctx.stroke();
-  // Base arrow
   ctx.beginPath();
   ctx.moveTo(-5, -6); ctx.lineTo(-5, -14); ctx.lineTo(-10, -10);
   ctx.stroke();
@@ -876,7 +874,6 @@ function drawIC(ctx, comp) {
   ctx.rect(-def.w/2, -def.h/2, def.w, def.h);
   ctx.fill();
   ctx.stroke();
-  // IC Label
   ctx.fillStyle = comp.selected ? '#00e5ff' : '#c8d8e0';
   ctx.font = `bold ${10/viewScale}px Barlow Condensed`;
   ctx.textAlign = 'center';
@@ -887,25 +884,21 @@ function drawIC(ctx, comp) {
 function drawTransformer(ctx, comp) {
   ctx.strokeStyle = comp.selected ? '#00e5ff' : '#c8d8e0';
   ctx.lineWidth = 1.5 / viewScale;
-  // Primary coils
   for (let i = 0; i < 3; i++) {
     ctx.beginPath();
     ctx.arc(-12, -15 + i*12, 5, Math.PI, 0);
     ctx.stroke();
   }
-  // Secondary coils
   for (let i = 0; i < 3; i++) {
     ctx.beginPath();
     ctx.arc(12, -15 + i*12, 5, 0, Math.PI);
     ctx.stroke();
   }
-  // Center line
   ctx.beginPath();
   ctx.setLineDash([2/viewScale, 2/viewScale]);
   ctx.moveTo(0, -22); ctx.lineTo(0, 22);
   ctx.stroke();
   ctx.setLineDash([]);
-  // Leads
   ctx.beginPath();
   ctx.moveTo(-30, -15); ctx.lineTo(-17, -15);
   ctx.moveTo(-30, 15);  ctx.lineTo(-17, 15);
@@ -999,7 +992,6 @@ function drawAntenna(ctx, comp) {
 
 function drawVarCap(ctx, comp) {
   drawCapacitor(ctx, comp);
-  // Arrow through
   ctx.strokeStyle = comp.selected ? '#00e5ff' : '#c8d8e0';
   ctx.lineWidth = 1 / viewScale;
   ctx.beginPath();
@@ -1031,10 +1023,9 @@ function drawAll() {
     sc.lineTo(wire.x2, wire.y2);
     sc.stroke();
 
-    // Junction dots at wire ends
     sc.fillStyle = '#00e5ff';
-    [wire.x1,wire.x2].forEach((x,i) => {
-      const y = i===0 ? wire.y1 : wire.y2;
+    [wire.x1, wire.x2].forEach((x, i) => {
+      const y = i === 0 ? wire.y1 : wire.y2;
       const junctions = countConnections(x, y);
       if (junctions >= 3) {
         sc.beginPath();
@@ -1067,7 +1058,6 @@ function drawAll() {
       def.draw(sc, comp);
     }
 
-    // Draw pin dots (on hover or always for wiring)
     if (tool === 'wire' || comp.selected) {
       sc.fillStyle = '#ff6b00';
       for (const pin of (def?.pins || [])) {
@@ -1077,7 +1067,6 @@ function drawAll() {
       }
     }
 
-    // Label (ref + value)
     sc.rotate(-(comp.rotation * Math.PI / 180));
     if (comp.flipH) sc.scale(-1, 1);
     sc.fillStyle = comp.selected ? '#00e5ff' : '#4a8aa0';
@@ -1094,7 +1083,6 @@ function drawAll() {
 
   sc.restore();
 
-  // Update status
   document.getElementById('sb-comp').textContent = components.length;
   document.getElementById('sb-wire').textContent = wires.length;
   document.getElementById('sb-zoom').textContent = Math.round(viewScale * 100) + '%';
@@ -1123,11 +1111,20 @@ function placeComponent(type, wx, wy) {
   if (!refCounters[def.sub]) refCounters[def.sub] = 0;
   refCounters[def.sub]++;
   const ref = def.sub + refCounters[def.sub];
+
+  let x = snapToGrid(wx);
+  let y = snapToGrid(wy);
+
+  // Nudge right until clear of all existing components
+  let attempts = 0;
+  while (wouldCollide(x, y, null) && attempts < 20) {
+    x += GRID * 2;
+    attempts++;
+  }
+
   const comp = {
     id: nextId++,
-    type, ref,
-    x: snapToGrid(wx),
-    y: snapToGrid(wy),
+    type, ref, x, y,
     value: '',
     rotation: 0,
     flipH: false,
@@ -1155,13 +1152,11 @@ function selectComponent(id) {
 }
 
 function hitTest(wx, wy) {
-  // Reverse order (top first)
   for (let i = components.length - 1; i >= 0; i--) {
     const comp = components[i];
     const def = getLibDef(comp.type);
     const hw = (def?.w || 40) / 2 + 8;
     const hh = (def?.h || 30) / 2 + 8;
-    // Simple AABB (ignoring rotation for now)
     if (wx >= comp.x - hw && wx <= comp.x + hw &&
         wy >= comp.y - hh && wy <= comp.y + hh) {
       return comp;
@@ -1210,11 +1205,12 @@ function canvasMouseDown(e) {
       selectComponent(comp.id);
       isDragging = true;
       dragComp = comp;
+      dragOrigX = comp.x;  // save for snap-back on collision
+      dragOrigY = comp.y;
       dragOffX = w.x - comp.x;
       dragOffY = w.y - comp.y;
     } else {
       selectComponent(null);
-      // Start pan with left button on empty space
       isPanning = true;
       panStartX = e.clientX; panStartY = e.clientY;
       panOriginX = viewX; panOriginY = viewY;
@@ -1233,7 +1229,6 @@ function canvasMouseDown(e) {
   if (tool === 'delete') {
     const comp = hitTest(w.x, w.y);
     if (comp) deleteComponent(comp.id);
-    // Also check wires
     else deleteWireAt(w.x, w.y);
   }
 
@@ -1254,8 +1249,13 @@ function canvasMouseMove(e) {
   }
 
   if (isDragging && dragComp) {
-    dragComp.x = snapToGrid(w.x - dragOffX);
-    dragComp.y = snapToGrid(w.y - dragOffY);
+    const nx = snapToGrid(w.x - dragOffX);
+    const ny = snapToGrid(w.y - dragOffY);
+    // Only move if the new position is clear
+    if (!wouldCollide(nx, ny, dragComp.id)) {
+      dragComp.x = nx;
+      dragComp.y = ny;
+    }
     drawAll(); return;
   }
 
@@ -1265,7 +1265,6 @@ function canvasMouseMove(e) {
     if (pin) {
       wireCurrent = {x: pin.x, y: pin.y};
     } else {
-      // Orthogonal routing
       const dx = snapToGrid(w.x) - wireStart.x;
       const dy = snapToGrid(w.y) - wireStart.y;
       if (Math.abs(dx) > Math.abs(dy)) {
@@ -1280,7 +1279,17 @@ function canvasMouseMove(e) {
 
 function canvasMouseUp(e) {
   if (isPanning) { isPanning = false; return; }
-  if (isDragging) { isDragging = false; dragComp = null; return; }
+  if (isDragging) {
+    isDragging = false;
+    // Final collision check — snap back if still colliding
+    if (dragComp && wouldCollide(dragComp.x, dragComp.y, dragComp.id)) {
+      dragComp.x = dragOrigX;
+      dragComp.y = dragOrigY;
+    }
+    dragComp = null;
+    drawAll();
+    return;
+  }
 
   if (tool === 'wire' && wireStart && wireCurrent) {
     if (Math.abs(wireCurrent.x - wireStart.x) > 1 ||
@@ -1323,7 +1332,6 @@ function canvasWheel(e) {
   const {x: sx, y: sy} = canvasXY(e);
   const factor = e.deltaY < 0 ? 1.1 : 0.9;
   const newScale = Math.max(0.1, Math.min(8, viewScale * factor));
-  // Zoom toward cursor
   viewX = sx - (sx - viewX) * (newScale / viewScale);
   viewY = sy - (sy - viewY) * (newScale / viewScale);
   viewScale = newScale;
@@ -1413,6 +1421,12 @@ function ctxDuplicate() {
   refCounters[def.sub]++;
   const copy = {...ctxTarget, id: nextId++, ref: def.sub + refCounters[def.sub],
     x: ctxTarget.x + GRID*2, y: ctxTarget.y + GRID*2, selected: false};
+  // Nudge duplicate if it still collides
+  let attempts = 0;
+  while (wouldCollide(copy.x, copy.y, null) && attempts < 20) {
+    copy.x += GRID * 2;
+    attempts++;
+  }
   components.push(copy);
   selectComponent(copy.id);
   drawAll();
@@ -1614,7 +1628,6 @@ function importJSON() {
 }
 
 function exportSVG() {
-  // Collect bounds
   let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
   components.forEach(c => {
     const def = getLibDef(c.type);
@@ -1629,11 +1642,9 @@ function exportSVG() {
   if (!isFinite(minX)) { minX=-200; maxX=200; minY=-150; maxY=150; }
   const W=maxX-minX, H=maxY-minY;
   let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="${minX} ${minY} ${W} ${H}" style="background:#0a0d0f">`;
-  // Wires
   for (const w of wires) {
     svg += `<line x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="#00e5ff" stroke-width="1.5" stroke-linecap="round"/>`;
   }
-  // Component labels
   for (const comp of components) {
     const def = getLibDef(comp.type);
     svg += `<text x="${comp.x}" y="${comp.y - (def?.h||30)/2 - 6}" text-anchor="middle" font-family="monospace" font-size="10" fill="#4a8aa0">${comp.ref||''}</text>`;
@@ -1645,6 +1656,33 @@ function exportSVG() {
   a.href = URL.createObjectURL(blob);
   a.download = '20260405_001_schematic.svg';
   a.click();
+}
+
+function exportSVGBase64() {
+  let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+  components.forEach(c => {
+    const def = getLibDef(c.type);
+    const hw=(def?.w||40)/2+40, hh=(def?.h||30)/2+40;
+    minX=Math.min(minX,c.x-hw); maxX=Math.max(maxX,c.x+hw);
+    minY=Math.min(minY,c.y-hh); maxY=Math.max(maxY,c.y+hh);
+  });
+  wires.forEach(w => {
+    minX=Math.min(minX,w.x1-20,w.x2-20); maxX=Math.max(maxX,w.x1+20,w.x2+20);
+    minY=Math.min(minY,w.y1-20,w.y2-20); maxY=Math.max(maxY,w.y1+20,w.y2+20);
+  });
+  if (!isFinite(minX)) { minX=-200; maxX=200; minY=-150; maxY=150; }
+  const W=maxX-minX, H=maxY-minY;
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="${minX} ${minY} ${W} ${H}" style="background:#0a0d0f">`;
+  for (const w of wires) {
+    svg += `<line x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="#00e5ff" stroke-width="1.5" stroke-linecap="round"/>`;
+  }
+  for (const comp of components) {
+    const def = getLibDef(comp.type);
+    svg += `<text x="${comp.x}" y="${comp.y-(def?.h||30)/2-6}" text-anchor="middle" font-family="monospace" font-size="10" fill="#4a8aa0">${comp.ref||''}</text>`;
+    svg += `<text x="${comp.x}" y="${comp.y+(def?.h||30)/2+14}" text-anchor="middle" font-family="monospace" font-size="9" fill="#6a9ab0">${comp.value||''}</text>`;
+  }
+  svg += '</svg>';
+  return btoa(unescape(encodeURIComponent(svg)));
 }
 
 function clearAll() {
@@ -1675,12 +1713,10 @@ function buildLibrary() {
     item.draggable = true;
     item.dataset.type = def.type;
 
-    // Mini SVG preview
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('width', '32'); svg.setAttribute('height', '20');
     svg.setAttribute('viewBox', '-16 -10 32 20');
     svg.classList.add('lib-symbol');
-    // Draw mini preview via offscreen canvas
     const oc = document.createElement('canvas');
     oc.width = 64; oc.height = 40;
     const octx = oc.getContext('2d');
@@ -1705,7 +1741,6 @@ function buildLibrary() {
     item.addEventListener('dragstart', e => {
       e.dataTransfer.setData('text/plain', def.type);
     });
-    // Touch place
     item.addEventListener('click', () => {
       const w = screenToWorld(wrap.clientWidth/2, wrap.clientHeight/2);
       placeComponent(def.type, w.x, w.y);
@@ -1716,7 +1751,6 @@ function buildLibrary() {
   }
 }
 
-// Drop on canvas
 schCanvas.addEventListener('dragover', e => e.preventDefault());
 schCanvas.addEventListener('drop', e => {
   e.preventDefault();
@@ -1738,7 +1772,6 @@ function filterLib(q) {
     item.style.display = item.textContent.toLowerCase().includes(ql) ? '' : 'none';
   });
   cats.forEach(cat => {
-    // Show cat if any sibling items visible
     let next = cat.nextSibling;
     let anyVisible = false;
     while (next && !next.classList?.contains('lib-cat')) {
@@ -1756,7 +1789,6 @@ function filterLib(q) {
 buildLibrary();
 drawAll();
 
-// Welcome state hint
 console.log('LAB//NOTEBOOK schematic editor loaded. Project: AM_receiver_20260405');
 </script>
 </body>

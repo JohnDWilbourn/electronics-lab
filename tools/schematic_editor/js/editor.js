@@ -768,7 +768,33 @@ function exportSVG() {
   const today = new Date().toISOString().slice(0,10).replace(/-/g,'');
   download(svg, `${today}_001_schematic.svg`, 'image/svg+xml');
 }
-
+function exportSVGBase64() {
+    // Re-run SVG generation and return as base64 for Android download bridge
+    let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+    components.forEach(c => {
+        const def = getLibDef(c.type);
+        const hw=(def?.w||40)/2+40, hh=(def?.h||30)/2+40;
+        minX=Math.min(minX,c.x-hw); maxX=Math.max(maxX,c.x+hw);
+        minY=Math.min(minY,c.y-hh); maxY=Math.max(maxY,c.y+hh);
+    });
+    wires.forEach(w => {
+        minX=Math.min(minX,w.x1-20,w.x2-20); maxX=Math.max(maxX,w.x1+20,w.x2+20);
+        minY=Math.min(minY,w.y1-20,w.y2-20); maxY=Math.max(maxY,w.y1+20,w.y2+20);
+    });
+    if (!isFinite(minX)) { minX=-200; maxX=200; minY=-150; maxY=150; }
+    const W=maxX-minX, H=maxY-minY;
+    let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="${minX} ${minY} ${W} ${H}" style="background:#0a0d0f">`;
+    for (const w of wires) {
+        svg += `<line x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="#00e5ff" stroke-width="1.5" stroke-linecap="round"/>`;
+    }
+    for (const comp of components) {
+        const def = getLibDef(comp.type);
+        svg += `<text x="${comp.x}" y="${comp.y-(def?.h||30)/2-6}" text-anchor="middle" font-family="monospace" font-size="10" fill="#4a8aa0">${comp.ref||''}</text>`;
+        svg += `<text x="${comp.x}" y="${comp.y+(def?.h||30)/2+14}" text-anchor="middle" font-family="monospace" font-size="9" fill="#6a9ab0">${comp.value||''}</text>`;
+    }
+    svg += '</svg>';
+    return btoa(unescape(encodeURIComponent(svg)));
+}
 function clearAll() {
   if (!confirm('Clear canvas? This cannot be undone.')) return;
   components=[]; wires=[]; selectedId=null;

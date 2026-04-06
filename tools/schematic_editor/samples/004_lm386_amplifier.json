@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "name": "LM386 Audio Amplifier",
+  "description": "Minimum component audio amplifier. Gain = 20 (26dB) default. Bridge pins 1 and 8 with 10µF for gain = 200. C1 input coupling, C2 output coupling, C3 supply bypass, C4 output filter (Zobel network with R1).",
+  "notes": "Vs range: 4–12V. Quiescent current: 4mA. Output power: 250mW at 8Ω load, 9V supply. Pin 7 (BYP): 10µF to GND reduces output noise. Pins 1+8 open = gain 20. 10µF between pins 1+8 = gain 200.",
+  "components": [
+    {"id":1,"type":"lm386","ref":"U1","x":0,"y":0,"rotation":0,"flipH":false,"value":"LM386","notes":"Audio power amplifier"},
+    {"id":2,"type":"cap_elec","ref":"C1","x":-120,"y":-15,"rotation":0,"flipH":false,"value":"10µF","notes":"Input coupling — blocks DC"},
+    {"id":3,"type":"pot","ref":"RV1","x":-180,"y":-15,"rotation":0,"flipH":false,"value":"10kΩ","notes":"Volume control"},
+    {"id":4,"type":"cap_elec","ref":"C2","x":120,"y":45,"rotation":0,"flipH":false,"value":"250µF 25V","notes":"Output coupling — blocks DC from speaker"},
+    {"id":5,"type":"capacitor","ref":"C3","x":-60,"y":-100,"rotation":90,"flipH":false,"value":"100nF","notes":"Supply bypass — place close to pin 6"},
+    {"id":6,"type":"cap_elec","ref":"C4","x":-80,"y":-100,"rotation":90,"flipH":false,"value":"100µF","notes":"Supply bypass — bulk"},
+    {"id":7,"type":"cap_elec","ref":"C5","x":80,"y":45,"rotation":90,"flipH":false,"value":"10µF","notes":"Pin 7 BYP — reduces noise floor"},
+    {"id":8,"type":"resistor","ref":"R1","x":160,"y":45,"rotation":0,"flipH":false,"value":"10Ω","notes":"Zobel network — stabilizes at HF"},
+    {"id":9,"type":"capacitor","ref":"C6","x":180,"y":60,"rotation":90,"flipH":false,"value":"47nF","notes":"Zobel network cap"},
+    {"id":10,"type":"crystal_res","ref":"LS1","x":240,"y":45,"rotation":0,"flipH":false,"value":"8Ω","notes":"Speaker or earphone"},
+    {"id":11,"type":"vcc","ref":"VCC1","x":40,"y":-100,"rotation":0,"flipH":false,"value":"+9V","notes":""},
+    {"id":12,"type":"gnd","ref":"GND1","x":-40,"y":100,"rotation":0,"flipH":false,"value":"","notes":""}
+  ],
+  "wires": []
+}

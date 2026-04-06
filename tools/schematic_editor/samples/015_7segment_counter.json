@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "name": "7-Segment Up/Down Counter",
+  "description": "BCD up/down counter driving 7-segment display. NE555 astable provides clock. 74HC192 counts up or down on separate clock inputs. CD4511 decodes BCD to 7-segment. Common cathode display. SW1=count up, SW2=count down, SW3=reset.",
+  "notes": "PARTS TO ACQUIRE: 74HC192 (BCD up/down counter), CD4511 (BCD to 7-seg decoder/driver), common cathode 7-segment display. All available on AliExpress/eBay. 74HC192: CU=pin5 (up clock), CD=pin4 (down clock), MR=pin14 (reset, active high), Q outputs → 4511 inputs. CD4511: LE=pin5 low (transparent), LT=pin3 high (no lamp test), BI=pin4 high (no blank). R1-R7=330Ω segment resistors. NE555 astable at ~1Hz provides visible count clock.",
+  "components": [
+    {"id":1,"type":"ne555","ref":"U1","x":-200,"y":0,"rotation":0,"flipH":false,"value":"NE555","notes":"1Hz clock source"},
+    {"id":2,"type":"resistor","ref":"R_A","x":-280,"y":-60,"rotation":0,"flipH":false,"value":"1kΩ","notes":"555 timing"},
+    {"id":3,"type":"resistor","ref":"R_B","x":-280,"y":-30,"rotation":0,"flipH":false,"value":"68kΩ","notes":"555 timing — sets ~1Hz"},
+    {"id":4,"type":"cap_elec","ref":"C_T","x":-280,"y":50,"rotation":90,"flipH":false,"value":"10µF","notes":"555 timing cap"},
+    {"id":5,"type":"74hc192","ref":"U2","x":0,"y":0,"rotation":0,"flipH":false,"value":"74HC192","notes":"BCD up/down counter — ACQUIRE"},
+    {"id":6,"type":"cd4511","ref":"U3","x":200,"y":0,"rotation":0,"flipH":false,"value":"CD4511","notes":"BCD to 7-seg decoder — ACQUIRE"},
+    {"id":7,"type":"ic_generic","ref":"DSP1","x":380,"y":0,"rotation":0,"flipH":false,"value":"7-SEG CC","notes":"Common cathode 7-seg display — ACQUIRE"},
+    {"id":8,"type":"resistor","ref":"R1","x":300,"y":-80,"rotation":90,"flipH":false,"value":"330Ω","notes":"Segment a current limit"},
+    {"id":9,"type":"resistor","ref":"R2","x":320,"y":-80,"rotation":90,"flipH":false,"value":"330Ω","notes":"Segment b"},
+    {"id":10,"type":"resistor","ref":"R3","x":340,"y":-80,"rotation":90,"flipH":false,"value":"330Ω","notes":"Segment c"},
+    {"id":11,"type":"resistor","ref":"R4","x":360,"y":-80,"rotation":90,"flipH":false,"value":"330Ω","notes":"Segment d"},
+    {"id":12,"type":"resistor","ref":"R5","x":300,"y":80,"rotation":90,"flipH":false,"value":"330Ω","notes":"Segment e"},
+    {"id":13,"type":"resistor","ref":"R6","x":320,"y":80,"rotation":90,"flipH":false,"value":"330Ω","notes":"Segment f"},
+    {"id":14,"type":"resistor","ref":"R7","x":340,"y":80,"rotation":90,"flipH":false,"value":"330Ω","notes":"Segment g"},
+    {"id":15,"type":"switch","ref":"SW1","x":-60,"y":-60,"rotation":0,"flipH":false,"value":"UP","notes":"Count up — connects to CU pin5"},
+    {"id":16,"type":"switch","ref":"SW2","x":-60,"y":-40,"rotation":0,"flipH":false,"value":"DOWN","notes":"Count down — connects to CD pin4"},
+    {"id":17,"type":"switch","ref":"SW3","x":-60,"y":-20,"rotation":0,"flipH":false,"value":"RESET","notes":"Master reset — connects to MR pin14"},
+    {"id":18,"type":"vcc","ref":"VCC1","x":0,"y":-140,"rotation":0,"flipH":false,"value":"+5V","notes":""},
+    {"id":19,"type":"gnd","ref":"GND1","x":0,"y":140,"rotation":0,"flipH":false,"value":"","notes":""}
+  ],
+  "wires": []
+}

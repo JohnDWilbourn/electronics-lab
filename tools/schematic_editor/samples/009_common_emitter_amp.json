@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "name": "Common Emitter Amplifier",
+  "description": "Classic CE amplifier with voltage divider bias. R1/R2 set Q-point. RE provides thermal stability. CE bypasses RE at AC. C1 input coupling, C2 output coupling. Gain ≈ −RC/re where re = 26mV/IC.",
+  "notes": "Voltage divider bias: VB = VCC × R2/(R1+R2). VE = VB − 0.7V. IE ≈ IC = VE/RE. RC sets collector load. Gain Av ≈ −RC/(RE||re). CE bypasses RE at signal frequencies, increasing AC gain. C1/C2 block DC from source/load. 2N3904 typical: hFE=100–300.",
+  "components": [
+    {"id":1,"type":"npn","ref":"Q1","x":0,"y":0,"rotation":0,"flipH":false,"value":"2N3904","notes":"CE amplifier transistor"},
+    {"id":2,"type":"resistor","ref":"R1","x":-80,"y":-80,"rotation":90,"flipH":false,"value":"47kΩ","notes":"Bias divider — upper"},
+    {"id":3,"type":"resistor","ref":"R2","x":-80,"y":40,"rotation":90,"flipH":false,"value":"10kΩ","notes":"Bias divider — lower"},
+    {"id":4,"type":"resistor","ref":"RC","x":40,"y":-80,"rotation":90,"flipH":false,"value":"4.7kΩ","notes":"Collector load resistor"},
+    {"id":5,"type":"resistor","ref":"RE","x":40,"y":60,"rotation":90,"flipH":false,"value":"1kΩ","notes":"Emitter resistor — stabilizes bias"},
+    {"id":6,"type":"cap_elec","ref":"CE","x":80,"y":60,"rotation":90,"flipH":false,"value":"100µF","notes":"Emitter bypass — restores AC gain"},
+    {"id":7,"type":"cap_elec","ref":"C1","x":-140,"y":0,"rotation":0,"flipH":false,"value":"10µF","notes":"Input coupling cap"},
+    {"id":8,"type":"cap_elec","ref":"C2","x":100,"y":-20,"rotation":0,"flipH":false,"value":"10µF","notes":"Output coupling cap"},
+    {"id":9,"type":"vcc","ref":"VCC1","x":40,"y":-140,"rotation":0,"flipH":false,"value":"+12V","notes":""},
+    {"id":10,"type":"gnd","ref":"GND1","x":40,"y":120,"rotation":0,"flipH":false,"value":"","notes":""}
+  ],
+  "wires": []
+}

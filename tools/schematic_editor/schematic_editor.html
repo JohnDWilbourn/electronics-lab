@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>LAB//NOTEBOOK — Schematic Editor</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@300;400;600;700&family=Barlow+Condensed:wght@400;700&display=swap');
+
+  :root {
+    --bg:      #0a0d0f;
+    --panel:   #111519;
+    --border:  #1e2830;
+    --accent:  #00e5ff;
+    --accent2: #ff6b00;
+    --text:    #c8d8e0;
+    --dim:     #4a6070;
+    --green:   #39ff14;
+    --red:     #ff3939;
+    --yellow:  #ffd600;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  /* TOP BAR */
+  #topbar {
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    padding: 0 12px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    z-index: 100;
+    overflow-x: auto;
+  }
+  #topbar::-webkit-scrollbar { display: none; }
+
+  .logo {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+    margin-right: 4px;
+  }
+  .logo span { color: var(--accent2); }
+
+  .tb-sep { width: 1px; height: 24px; background: var(--border); flex-shrink: 0; }
+
+  .tb-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--dim);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    cursor: pointer;
+    transition: all 0.12s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .tb-btn:hover  { border-color: var(--accent); color: var(--accent); }
+  .tb-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(0,229,255,0.07); }
+  .tb-btn.danger:hover { border-color: var(--red); color: var(--red); }
+
+  #project-name {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+    margin-left: auto;
+    white-space: nowrap;
+    padding-left: 8px;
+  }
+  #status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 5px var(--green);
+    flex-shrink: 0;
+  }
+
+  /* MAIN */
+  #main { display: flex; flex: 1; overflow: hidden; }
+
+  /* LIBRARY */
+  #library {
+    width: 175px;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  #library-header {
+    padding: 8px 12px 6px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--dim);
+    border-bottom: 1px solid var(--border);
+  }
+  #lib-search {
+    margin: 6px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    padding: 4px 7px;
+    outline: none;
+    width: calc(100% - 12px);
+  }
+  #lib-search:focus { border-color: var(--accent); }
+  #lib-scroll { overflow-y: auto; flex: 1; padding-bottom: 8px; }
+  #lib-scroll::-webkit-scrollbar { width: 3px; }
+  #lib-scroll::-webkit-scrollbar-thumb { background: var(--border); }
+
+  .lib-cat {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    padding: 10px 12px 3px;
+  }
+  .lib-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 12px;
+    cursor: grab;
+    border-left: 2px solid transparent;
+    transition: background 0.1s;
+  }
+  .lib-item:hover { background: rgba(0,229,255,0.05); border-left-color: var(--accent); }
+  .lib-item:active { cursor: grabbing; }
+  .lib-label { font-size: 11px; color: var(--text); line-height: 1.2; }
+  .lib-label small { display: block; color: var(--dim); font-size: 9px; font-family: 'Share Tech Mono', monospace; }
+
+  /* CANVAS */
+  #canvas-wrap { flex: 1; position: relative; overflow: hidden; background: var(--bg); }
+  #grid-canvas  { position: absolute; top: 0; left: 0; pointer-events: none; }
+  #schematic-canvas { position: absolute; top: 0; left: 0; cursor: crosshair; }
+
+  /* PROPERTIES */
+  #props {
+    width: 195px;
+    background: var(--panel);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+  #props-header {
+    padding: 8px 12px 6px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--dim);
+    border-bottom: 1px solid var(--border);
+  }
+  #props-body { flex: 1; overflow-y: auto; padding: 10px; }
+  .prop-row { margin-bottom: 10px; }
+  .prop-label { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); margin-bottom: 3px; }
+  .prop-input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: 'Share Tech Mono', monospace; font-size: 11px; padding: 3px 6px; outline: none; }
+  .prop-input:focus { border-color: var(--accent); }
+  #no-selection { color: var(--dim); font-size: 11px; font-style: italic; text-align: center; margin-top: 16px; line-height: 1.6; }
+
+  /* STATUS BAR */
+  #statusbar {
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+    height: 24px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 16px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+    flex-shrink: 0;
+  }
+  .sb-val { color: var(--accent); }
+
+  /* CONTEXT MENU */
+  #ctx-menu {
+    position: fixed;
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    z-index: 9999;
+    display: none;
+    min-width: 140px;
+  }
+  .ctx-item { padding: 6px 14px; font-size: 12px; cursor: pointer; color: var(--text); }
+  .ctx-item:hover { background: rgba(0,229,255,0.1); color: var(--accent); }
+  .ctx-sep { height: 1px; background: var(--border); margin: 2px 0; }
+  .ctx-item.danger:hover { background: rgba(255,57,57,0.1); color: var(--red); }
+
+  /* SAMPLES DROPDOWN */
+  #samples-menu {
+    position: fixed;
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    z-index: 9999;
+    display: none;
+    min-width: 220px;
+    max-height: 340px;
+    overflow-y: auto;
+  }
+  .sample-item { padding: 6px 14px; font-size: 11px; cursor: pointer; color: var(--text); }
+  .sample-item:hover { background: rgba(0,229,255,0.1); color: var(--accent); }
+  .sample-name { font-weight: 600; }
+  .sample-desc { font-size: 10px; color: var(--dim); }
+
+  /* MODAL */
+  #modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  #modal-overlay.open { display: flex; }
+  #modal { background: var(--panel); border: 1px solid var(--accent); padding: 20px; min-width: 300px; max-width: 440px; width: 90%; }
+  #modal h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+  #modal textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: 'Share Tech Mono', monospace; font-size: 11px; padding: 7px; outline: none; resize: vertical; min-height: 100px; }
+  #modal textarea:focus { border-color: var(--accent); }
+  .modal-btns { display: flex; gap: 8px; margin-top: 12px; justify-content: flex-end; }
+
+  @media (max-width: 600px) {
+    #library { width: 130px; }
+    #props { display: none; }
+    .tb-btn { padding: 3px 5px; font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <div class="logo">LAB<span>//</span>NOTEBOOK</div>
+  <div class="tb-sep"></div>
+  <button class="tb-btn active" id="tool-select"  onclick="setTool('select')">SELECT</button>
+  <button class="tb-btn"        id="tool-wire"    onclick="setTool('wire')">WIRE</button>
+  <button class="tb-btn"        id="tool-delete"  onclick="setTool('delete')">DELETE</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" onclick="rotateSelected()">ROTATE</button>
+  <button class="tb-btn" onclick="flipSelected()">FLIP</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" onclick="zoomIn()">Z+</button>
+  <button class="tb-btn" onclick="zoomOut()">Z−</button>
+  <button class="tb-btn" onclick="zoomFit()">FIT</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" onclick="showSamples(event)">SAMPLES ▾</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" onclick="exportJSON()">EXPORT JSON</button>
+  <button class="tb-btn" onclick="importJSON()">IMPORT</button>
+  <button class="tb-btn" onclick="exportSVG()">SVG</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn danger" onclick="clearAll()">CLEAR</button>
+  <div id="project-name">AM_receiver_20260405</div>
+  <div id="status-dot"></div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <div id="library">
+    <div id="library-header">Components</div>
+    <input id="lib-search" type="text" placeholder="search..." oninput="filterLib(this.value)">
+    <div id="lib-scroll"></div>
+  </div>
+
+  <div id="canvas-wrap">
+    <canvas id="grid-canvas"></canvas>
+    <canvas id="schematic-canvas"
+      onmousedown="canvasMouseDown(event)"
+      onmousemove="canvasMouseMove(event)"
+      onmouseup="canvasMouseUp(event)"
+      ondblclick="canvasDblClick(event)"
+      oncontextmenu="canvasRightClick(event)"
+      onwheel="canvasWheel(event)"
+      ontouchstart="touchStart(event)"
+      ontouchmove="touchMove(event)"
+      ontouchend="touchEnd(event)">
+    </canvas>
+  </div>
+
+  <div id="props">
+    <div id="props-header">Properties</div>
+    <div id="props-body">
+      <div id="no-selection">No component<br>selected.<br><br>Drag from library<br>or tap to place.<br><br>Double-click<br>to edit value.</div>
+      <div id="prop-fields" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<!-- STATUS BAR -->
+<div id="statusbar">
+  <span>TOOL: <span class="sb-val" id="sb-tool">SELECT</span></span>
+  <span>ZOOM: <span class="sb-val" id="sb-zoom">100%</span></span>
+  <span>POS: <span class="sb-val" id="sb-pos">0,0</span></span>
+  <span>C: <span class="sb-val" id="sb-comp">0</span></span>
+  <span>W: <span class="sb-val" id="sb-wire">0</span></span>
+</div>
+
+<!-- CONTEXT MENU -->
+<div id="ctx-menu">
+  <div class="ctx-item" onclick="ctxRotate()">↻ Rotate 90°</div>
+  <div class="ctx-item" onclick="ctxFlip()">⇄ Flip</div>
+  <div class="ctx-item" onclick="ctxDuplicate()">⧉ Duplicate</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" onclick="ctxEditLabel()">✎ Edit Ref</div>
+  <div class="ctx-item" onclick="ctxEditValue()">✎ Edit Value</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item danger" onclick="ctxDelete()">✕ Delete</div>
+</div>
+
+<!-- SAMPLES MENU -->
+<div id="samples-menu"></div>
+
+<!-- MODAL -->
+<div id="modal-overlay">
+  <div id="modal">
+    <h3 id="modal-title">Edit</h3>
+    <div id="modal-content"></div>
+    <div class="modal-btns">
+      <button class="tb-btn" onclick="modalCancel()">CANCEL</button>
+      <button class="tb-btn active" onclick="modalOK()">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODULES — load order matters -->
+<script src="js/state.js"></script>
+<script src="js/symbols.js"></script>
+<script src="components/components.js"></script>
+<script src="js/editor.js"></script>
+</body>
+</html>

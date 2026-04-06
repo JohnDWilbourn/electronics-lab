@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "name": "Wheatstone Bridge with NTC Thermistor",
+  "description": "Classic Wheatstone bridge for precision resistance measurement. RT1 (NTC thermistor) is the unknown. R1=R2=R3 at balance point. Bridge output drives op-amp differential amplifier. Null detector or meter reads bridge imbalance proportional to temperature.",
+  "notes": "At balance: RT1/R3 = R2/R1. With matched R1=R2=R3=10kΩ, bridge nulls at RT1=10kΩ (25°C for typical NTC). Sensitivity: ~1mV/°C with 5V supply. U1 (op-amp) amplifies differential output. RV1 sets balance point offset. Used in temperature measurement, strain gauges, load cells.",
+  "components": [
+    {"id":1,"type":"ntc","ref":"RT1","x":-60,"y":-60,"rotation":90,"flipH":false,"value":"10kΩ NTC","notes":"Unknown — temperature sensor"},
+    {"id":2,"type":"resistor","ref":"R1","x":60,"y":-60,"rotation":90,"flipH":false,"value":"10kΩ","notes":"Reference arm"},
+    {"id":3,"type":"resistor","ref":"R2","x":-60,"y":60,"rotation":90,"flipH":false,"value":"10kΩ","notes":"Reference arm"},
+    {"id":4,"type":"pot","ref":"RV1","x":60,"y":60,"rotation":90,"flipH":false,"value":"10kΩ","notes":"Balance adjust"},
+    {"id":5,"type":"lm358","ref":"U1","x":200,"y":0,"rotation":0,"flipH":false,"value":"LM358","notes":"Differential amplifier — bridge output"},
+    {"id":6,"type":"resistor","ref":"R3","x":140,"y":-40,"rotation":0,"flipH":false,"value":"10kΩ","notes":"Op-amp input resistor"},
+    {"id":7,"type":"resistor","ref":"R4","x":140,"y":40,"rotation":0,"flipH":false,"value":"10kΩ","notes":"Op-amp input resistor"},
+    {"id":8,"type":"resistor","ref":"R5","x":260,"y":-40,"rotation":90,"flipH":false,"value":"100kΩ","notes":"Feedback resistor — sets gain=10"},
+    {"id":9,"type":"vcc","ref":"VCC1","x":0,"y":-120,"rotation":0,"flipH":false,"value":"+5V","notes":"Bridge excitation voltage"},
+    {"id":10,"type":"gnd","ref":"GND1","x":0,"y":120,"rotation":0,"flipH":false,"value":"","notes":""}
+  ],
+  "wires": []
+}

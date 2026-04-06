@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "name": "AM Receiver — 1610 kHz (KLIX)",
+  "description": "Phase 1 breadboard AM receiver. Tank circuit tunes to 1610 kHz. 1N4148 envelope detector. LM386 audio output stage to crystal earpiece. Single 18650 Li-ion supply.",
+  "notes": "L1+C1+C_trim = tank circuit. Resonant freq: f = 1/(2π√(LC)). 220µH + 100pF + 50pF trimmer ≈ 1.58–1.67 MHz range covers 1610 kHz. Trim C to exactly 1610 kHz by ear or with scope. D1 = envelope detector. C2 = post-detector AF filter. C3 = LM386 input coupling. C4 = output filter. RV1 = volume. BT1 = 18650 @ 3.7V.",
+  "components": [
+    {"id":1,"type":"antenna","ref":"ANT1","x":-280,"y":0,"rotation":0,"flipH":false,"value":"1-3m wire","notes":"Long wire antenna — connect to tank top"},
+    {"id":2,"type":"inductor","ref":"L1","x":-180,"y":0,"rotation":0,"flipH":false,"value":"220µH","notes":"Bojack DIP choke — tank inductor"},
+    {"id":3,"type":"capacitor","ref":"C1","x":-120,"y":40,"rotation":90,"flipH":false,"value":"100pF","notes":"Tank capacitor — sets coarse frequency"},
+    {"id":4,"type":"var_cap","ref":"C_trim","x":-80,"y":40,"rotation":90,"flipH":false,"value":"50pF","notes":"Trimmer — fine tune to 1610 kHz"},
+    {"id":5,"type":"diode","ref":"D1","x":-20,"y":0,"rotation":0,"flipH":false,"value":"1N4148","notes":"Envelope detector — AM demodulator"},
+    {"id":6,"type":"capacitor","ref":"C2","x":40,"y":30,"rotation":90,"flipH":false,"value":"10nF","notes":"Post-detector AF filter"},
+    {"id":7,"type":"pot","ref":"RV1","x":80,"y":0,"rotation":0,"flipH":false,"value":"10kΩ","notes":"Volume control"},
+    {"id":8,"type":"cap_elec","ref":"C3","x":140,"y":-15,"rotation":0,"flipH":false,"value":"10µF","notes":"LM386 input coupling"},
+    {"id":9,"type":"lm386","ref":"U1","x":220,"y":0,"rotation":0,"flipH":false,"value":"LM386","notes":"Audio output amplifier"},
+    {"id":10,"type":"cap_elec","ref":"C4","x":320,"y":45,"rotation":0,"flipH":false,"value":"220µF","notes":"LM386 output filter"},
+    {"id":11,"type":"cap_elec","ref":"C5","x":300,"y":-60,"rotation":90,"flipH":false,"value":"100µF","notes":"Supply bypass"},
+    {"id":12,"type":"resistor","ref":"R1","x":380,"y":45,"rotation":0,"flipH":false,"value":"10Ω","notes":"Speaker protection"},
+    {"id":13,"type":"crystal_res","ref":"J1","x":440,"y":45,"rotation":0,"flipH":false,"value":"3.5mm","notes":"Crystal earpiece or headphone jack"},
+    {"id":14,"type":"battery","ref":"BT1","x":-280,"y":80,"rotation":0,"flipH":false,"value":"18650 3.7V","notes":"Single cell Li-ion"},
+    {"id":15,"type":"gnd","ref":"GND1","x":0,"y":120,"rotation":0,"flipH":false,"value":"","notes":""},
+    {"id":16,"type":"vcc","ref":"VCC1","x":220,"y":-100,"rotation":0,"flipH":false,"value":"3.7V","notes":""}
+  ],
+  "wires": []
+}

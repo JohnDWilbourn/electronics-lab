@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "name": "Crystal Oscillator — Pierce Topology",
+  "description": "Pierce crystal oscillator using CMOS inverter (74HC04). Y1 sets frequency with high precision. R1 biases inverter in linear region. C1/C2 form feedback network. R2 limits current through crystal.",
+  "notes": "Most stable simple oscillator topology. Uses one gate of 74HC04. R1 (1MΩ–10MΩ) biases gate as linear amplifier. C1=C2=22pF for most crystals (check datasheet load capacitance). R2 (330Ω–1kΩ) limits drive level — prevents crystal overdrive. Second gate buffers output. Frequency accuracy: ±30ppm typical, ±5ppm with matched load caps.",
+  "components": [
+    {"id":1,"type":"crystal","ref":"Y1","x":0,"y":0,"rotation":0,"flipH":false,"value":"4MHz","notes":"Fundamental mode crystal"},
+    {"id":2,"type":"74hc04","ref":"U1","x":100,"y":0,"rotation":0,"flipH":false,"value":"74HC04","notes":"Hex inverter — one gate used as amp, one as buffer"},
+    {"id":3,"type":"resistor","ref":"R1","x":100,"y":-60,"rotation":0,"flipH":false,"value":"10MΩ","notes":"Bias resistor — gate to output feedback"},
+    {"id":4,"type":"resistor","ref":"R2","x":60,"y":0,"rotation":0,"flipH":false,"value":"330Ω","notes":"Crystal drive limit resistor"},
+    {"id":5,"type":"capacitor","ref":"C1","x":-60,"y":40,"rotation":90,"flipH":false,"value":"22pF","notes":"Load capacitor — input side"},
+    {"id":6,"type":"capacitor","ref":"C2","x":60,"y":40,"rotation":90,"flipH":false,"value":"22pF","notes":"Load capacitor — output side"},
+    {"id":7,"type":"capacitor","ref":"C3","x":160,"y":40,"rotation":90,"flipH":false,"value":"100nF","notes":"Supply bypass"},
+    {"id":8,"type":"vcc","ref":"VCC1","x":100,"y":-100,"rotation":0,"flipH":false,"value":"+5V","notes":""},
+    {"id":9,"type":"gnd","ref":"GND1","x":60,"y":100,"rotation":0,"flipH":false,"value":"","notes":""}
+  ],
+  "wires": []
+}

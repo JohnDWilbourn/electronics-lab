@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "name": "RC High-Pass Filter",
+  "description": "First-order RC high-pass filter. Passes frequencies above fc, attenuates below. fc = 1/(2πRC). Capacitor blocks DC and low frequencies. Resistor provides load path to ground.",
+  "notes": "fc = 1/(2π×R1×C1). R1=10kΩ, C1=10nF: fc ≈ 1.59kHz. Below fc, output rolls off at −20dB/decade. Used for AC coupling, rumble filtering, blocking DC offset. Complement to low-pass filter.",
+  "components": [
+    {"id":1,"type":"capacitor","ref":"C1","x":0,"y":0,"rotation":0,"flipH":false,"value":"10nF","notes":"Series capacitor — blocks DC and low freq"},
+    {"id":2,"type":"resistor","ref":"R1","x":80,"y":40,"rotation":90,"flipH":false,"value":"10kΩ","notes":"Shunt resistor — provides return path"},
+    {"id":3,"type":"vcc","ref":"VIN","x":-100,"y":0,"rotation":0,"flipH":false,"value":"Vin","notes":"Signal input"},
+    {"id":4,"type":"vcc","ref":"VOUT","x":140,"y":0,"rotation":0,"flipH":false,"value":"Vout","notes":"Filtered output"},
+    {"id":5,"type":"gnd","ref":"GND1","x":80,"y":80,"rotation":0,"flipH":false,"value":"","notes":""}
+  ],
+  "wires": [
+    {"x1":-80,"y1":0,"x2":-20,"y2":0},
+    {"x1":20,"y1":0,"x2":80,"y2":0},
+    {"x1":80,"y1":0,"x2":80,"y2":20},
+    {"x1":80,"y1":0,"x2":120,"y2":0}
+  ]
+}

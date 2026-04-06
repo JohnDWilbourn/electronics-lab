@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "name": "LM317 Adjustable Bench Supply",
+  "description": "Adjustable positive voltage regulator. Output voltage set by R1 and RV1. Vout = 1.25 × (1 + RV1/R1). C1 input bypass, C2 output bypass, D1 protects against reverse input voltage.",
+  "notes": "Vout = 1.25V × (1 + RV1/R1). With R1=240Ω, RV1=0–5kΩ: Vout = 1.25V to 27V. Min input: Vout + 3V. D1 (1N4007) protects output cap discharge path. C1=100nF ceramic close to input pin. C2=10µF output. Heatsink required above ~1W dissipation: P = (Vin−Vout) × Iout.",
+  "components": [
+    {"id":1,"type":"lm317","ref":"U1","x":0,"y":0,"rotation":0,"flipH":false,"value":"LM317T","notes":"TO-220 — heatsink if >1W"},
+    {"id":2,"type":"resistor","ref":"R1","x":80,"y":40,"rotation":90,"flipH":false,"value":"240Ω","notes":"Fixed reference resistor — do not substitute"},
+    {"id":3,"type":"pot","ref":"RV1","x":80,"y":80,"rotation":90,"flipH":false,"value":"5kΩ","notes":"Output voltage adjust"},
+    {"id":4,"type":"capacitor","ref":"C1","x":-80,"y":40,"rotation":90,"flipH":false,"value":"100nF","notes":"Input bypass — close to IC"},
+    {"id":5,"type":"cap_elec","ref":"C2","x":160,"y":40,"rotation":90,"flipH":false,"value":"10µF","notes":"Output bypass"},
+    {"id":6,"type":"diode","ref":"D1","x":40,"y":60,"rotation":90,"flipH":false,"value":"1N4007","notes":"Output protection — cathode to OUT, anode to ADJ"},
+    {"id":7,"type":"diode","ref":"D2","x":-40,"y":0,"rotation":0,"flipH":false,"value":"1N4007","notes":"Input protection against reverse voltage"},
+    {"id":8,"type":"vcc","ref":"VIN","x":-120,"y":-60,"rotation":0,"flipH":false,"value":"Vin","notes":"Unregulated DC input"},
+    {"id":9,"type":"vcc","ref":"VOUT","x":200,"y":-60,"rotation":0,"flipH":false,"value":"Vout","notes":"Regulated output"},
+    {"id":10,"type":"gnd","ref":"GND1","x":80,"y":120,"rotation":0,"flipH":false,"value":"","notes":""}
+  ],
+  "wires": []
+}

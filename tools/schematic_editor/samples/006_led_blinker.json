@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "name": "LED Blinker — NE555 Astable",
+  "description": "Classic Mims-style LED flasher. NE555 in astable mode driving an LED. R1=1kΩ, R2=100kΩ, C1=10µF gives ~0.7Hz blink rate.",
+  "notes": "The Forrest Mims classic. f ≈ 1.44/((R1+2×R2)×C1). Duty cycle slightly above 50% due to R1. Reduce C1 for faster blink. Swap LED color at will. R3 limits LED current to ~10mA at 9V.",
+  "components": [
+    {"id":1,"type":"ne555","ref":"U1","x":0,"y":0,"rotation":0,"flipH":false,"value":"NE555","notes":""},
+    {"id":2,"type":"resistor","ref":"R1","x":-120,"y":-60,"rotation":0,"flipH":false,"value":"1kΩ","notes":""},
+    {"id":3,"type":"resistor","ref":"R2","x":-120,"y":-30,"rotation":0,"flipH":false,"value":"100kΩ","notes":""},
+    {"id":4,"type":"cap_elec","ref":"C1","x":-120,"y":50,"rotation":90,"flipH":false,"value":"10µF","notes":"Timing cap"},
+    {"id":5,"type":"capacitor","ref":"C2","x":80,"y":40,"rotation":90,"flipH":false,"value":"10nF","notes":"CV bypass"},
+    {"id":6,"type":"resistor","ref":"R3","x":120,"y":-60,"rotation":90,"flipH":false,"value":"470Ω","notes":"LED current limit"},
+    {"id":7,"type":"led","ref":"D1","x":120,"y":-20,"rotation":0,"flipH":false,"value":"RED 5mm","notes":"Output LED"},
+    {"id":8,"type":"vcc","ref":"VCC1","x":0,"y":-120,"rotation":0,"flipH":false,"value":"+9V","notes":""},
+    {"id":9,"type":"gnd","ref":"GND1","x":0,"y":120,"rotation":0,"flipH":false,"value":"","notes":""}
+  ],
+  "wires": []
+}

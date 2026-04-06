@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "name": "LC Tank Circuit — 1610 kHz",
+  "description": "Parallel LC resonant circuit (tank) tuned to 1610 kHz (KLIX broadcast). L1=220µH, C1=100pF fixed, C_trim=50pF variable. Resonant frequency: f = 1/(2π√(LC)).",
+  "notes": "Target: 1610 kHz. With L=220µH, C_total needed = 1/(4π²×f²×L) ≈ 44pF. Trimmer adjusts from ~100+50=150pF (lower freq) down to ~100pF (higher freq). Fine tune by ear. Q factor of Bojack DIP choke is modest — ferrite rod antenna would improve selectivity. This circuit is the front end of the AM receiver (sample 005).",
+  "components": [
+    {"id":1,"type":"inductor","ref":"L1","x":0,"y":0,"rotation":0,"flipH":false,"value":"220µH","notes":"Bojack DIP choke — tank inductor"},
+    {"id":2,"type":"capacitor","ref":"C1","x":80,"y":40,"rotation":90,"flipH":false,"value":"100pF","notes":"Fixed tank cap"},
+    {"id":3,"type":"var_cap","ref":"C_trim","x":120,"y":40,"rotation":90,"flipH":false,"value":"50pF","notes":"Trimmer — tune to 1610 kHz"},
+    {"id":4,"type":"antenna","ref":"ANT1","x":-80,"y":0,"rotation":0,"flipH":false,"value":"long wire","notes":"Antenna couples RF into tank"},
+    {"id":5,"type":"gnd","ref":"GND1","x":80,"y":100,"rotation":0,"flipH":false,"value":"","notes":""}
+  ],
+  "wires": [
+    {"x1":-30,"y1":0,"x2":80,"y2":0},
+    {"x1":80,"y1":0,"x2":80,"y2":20},
+    {"x1":80,"y1":0,"x2":120,"y2":0},
+    {"x1":120,"y1":0,"x2":120,"y2":20},
+    {"x1":80,"y1":60,"x2":80,"y2":80},
+    {"x1":120,"y1":60,"x2":80,"y2":60}
+  ]
+}

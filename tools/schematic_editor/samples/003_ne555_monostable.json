@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "name": "NE555 Monostable (One-Shot)",
+  "description": "Single pulse output triggered by negative pulse on pin 2. Output pulse width T = 1.1 × R1 × C1. Output returns LOW after timeout.",
+  "notes": "T = 1.1 × R1 × C1. With R1=100kΩ, C1=10µF: T ≈ 1.1s. Trigger must be LOW for less than T. Pin 4 (RST) tied high. D1 protects trigger input.",
+  "components": [
+    {"id":1,"type":"ne555","ref":"U1","x":0,"y":0,"rotation":0,"flipH":false,"value":"NE555","notes":""},
+    {"id":2,"type":"resistor","ref":"R1","x":-120,"y":-60,"rotation":0,"flipH":false,"value":"100kΩ","notes":"Timing resistor"},
+    {"id":3,"type":"cap_elec","ref":"C1","x":-120,"y":40,"rotation":90,"flipH":false,"value":"10µF","notes":"Timing capacitor"},
+    {"id":4,"type":"capacitor","ref":"C2","x":80,"y":40,"rotation":90,"flipH":false,"value":"10nF","notes":"CV bypass pin 5"},
+    {"id":5,"type":"switch","ref":"SW1","x":-140,"y":-20,"rotation":0,"flipH":false,"value":"TRIG","notes":"Momentary push — pulls pin 2 low"},
+    {"id":6,"type":"resistor","ref":"R2","x":-140,"y":-60,"rotation":90,"flipH":false,"value":"10kΩ","notes":"Pull-up for trigger"},
+    {"id":7,"type":"led","ref":"D1","x":120,"y":-40,"rotation":0,"flipH":false,"value":"GREEN","notes":"Output indicator"},
+    {"id":8,"type":"resistor","ref":"R3","x":120,"y":-80,"rotation":90,"flipH":false,"value":"470Ω","notes":"LED resistor"},
+    {"id":9,"type":"vcc","ref":"VCC1","x":0,"y":-120,"rotation":0,"flipH":false,"value":"+9V","notes":""},
+    {"id":10,"type":"gnd","ref":"GND1","x":0,"y":120,"rotation":0,"flipH":false,"value":"","notes":""}
+  ],
+  "wires": []
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "name": "RC Low-Pass Filter",
+  "description": "First-order RC low-pass filter. Passes frequencies below fc, attenuates above. fc = 1/(2πRC). At fc: output is −3dB (70.7% of input). Roll-off: −20dB/decade above fc.",
+  "notes": "fc = 1/(2π×R1×C1). R1=10kΩ, C1=10nF: fc ≈ 1.59kHz. Above fc, output rolls off at −20dB/decade. Used for audio filtering, noise reduction, anti-aliasing before ADC. Input impedance = R1. Output should drive high-impedance load.",
+  "components": [
+    {"id":1,"type":"resistor","ref":"R1","x":0,"y":0,"rotation":0,"flipH":false,"value":"10kΩ","notes":"Series resistor"},
+    {"id":2,"type":"capacitor","ref":"C1","x":80,"y":40,"rotation":90,"flipH":false,"value":"10nF","notes":"Shunt capacitor — low impedance at HF"},
+    {"id":3,"type":"vcc","ref":"VIN","x":-100,"y":0,"rotation":0,"flipH":false,"value":"Vin","notes":"Signal input"},
+    {"id":4,"type":"vcc","ref":"VOUT","x":140,"y":0,"rotation":0,"flipH":false,"value":"Vout","notes":"Filtered output"},
+    {"id":5,"type":"gnd","ref":"GND1","x":80,"y":80,"rotation":0,"flipH":false,"value":"","notes":""}
+  ],
+  "wires": [
+    {"x1":-80,"y1":0,"x2":-30,"y2":0},
+    {"x1":30,"y1":0,"x2":80,"y2":0},
+    {"x1":80,"y1":0,"x2":80,"y2":20},
+    {"x1":80,"y1":0,"x2":120,"y2":0}
+  ]
+}

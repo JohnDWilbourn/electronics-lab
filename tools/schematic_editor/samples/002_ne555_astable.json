@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "name": "NE555 Astable Multivibrator",
+  "description": "Free-running oscillator. Output is a square wave. Frequency and duty cycle set by R1, R2, C1. Pin 4 (RST) tied high. Pin 5 (CV) bypassed to ground via C2.",
+  "notes": "f = 1.44 / ((R1 + 2×R2) × C1). Duty cycle = (R1+R2)/(R1+2×R2). With R1=1kΩ, R2=10kΩ, C1=10µF: f ≈ 6.7Hz. LED blinks visible. C2=10nF on pin 5 recommended to reduce noise.",
+  "components": [
+    {"id":1,"type":"ne555","ref":"U1","x":0,"y":0,"rotation":0,"flipH":false,"value":"NE555","notes":""},
+    {"id":2,"type":"resistor","ref":"R1","x":-100,"y":-80,"rotation":0,"flipH":false,"value":"1kΩ","notes":"Timing resistor — part of charge path"},
+    {"id":3,"type":"resistor","ref":"R2","x":-100,"y":-40,"rotation":0,"flipH":false,"value":"10kΩ","notes":"Timing resistor — part of charge/discharge path"},
+    {"id":4,"type":"cap_elec","ref":"C1","x":-100,"y":60,"rotation":90,"flipH":false,"value":"10µF","notes":"Timing capacitor — charged via R1+R2, discharged via R2"},
+    {"id":5,"type":"capacitor","ref":"C2","x":80,"y":40,"rotation":90,"flipH":false,"value":"10nF","notes":"Control voltage bypass — pin 5 noise filter"},
+    {"id":6,"type":"led","ref":"D1","x":120,"y":-40,"rotation":0,"flipH":false,"value":"RED","notes":"Output indicator"},
+    {"id":7,"type":"resistor","ref":"R3","x":120,"y":-80,"rotation":90,"flipH":false,"value":"470Ω","notes":"LED current limiting resistor"},
+    {"id":8,"type":"vcc","ref":"VCC1","x":0,"y":-120,"rotation":0,"flipH":false,"value":"+9V","notes":""},
+    {"id":9,"type":"gnd","ref":"GND1","x":0,"y":120,"rotation":0,"flipH":false,"value":"","notes":""},
+    {"id":10,"type":"cap_elec","ref":"C3","x":-180,"y":0,"rotation":90,"flipH":false,"value":"100µF","notes":"Supply bypass cap"}
+  ],
+  "wires": [
+    {"x1":0,"y1":-100,"x2":0,"y2":-45},
+    {"x1":0,"y1":45,"x2":0,"y2":100},
+    {"x1":-40,"y1":-45,"x2":-100,"y2":-45},
+    {"x1":-40,"y1":-15,"x2":-100,"y2":-15},
+    {"x1":-40,"y1":15,"x2":-100,"y2":15},
+    {"x1":-40,"y1":45,"x2":-100,"y2":45},
+    {"x1":40,"y1":-45,"x2":80,"y2":-45},
+    {"x1":80,"y1":-45,"x2":80,"y2":-60},
+    {"x1":40,"y1":-15,"x2":60,"y2":-15},
+    {"x1":40,"y1":15,"x2":80,"y2":15},
+    {"x1":80,"y1":15,"x2":80,"y2":20},
+    {"x1":40,"y1":45,"x2":60,"y2":45}
+  ]
+}

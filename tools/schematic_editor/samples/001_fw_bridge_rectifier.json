@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "name": "Full-Wave Bridge Rectifier",
+  "description": "Standard FWBR with filter cap and load resistor. Uses four 1N4007 rectifier diodes. C1 smooths output ripple. R1 represents load. Vout ≈ Vpeak − 1.4V (two diode drops).",
+  "notes": "D1-D4: 1N4007 (50V PIV minimum per diode, 1A). C1: 1000µF 50V electrolytic. R1: load resistor. For 12VAC input: Vpeak = 16.97V, Vdc ≈ 15.6V unloaded.",
+  "components": [
+    {"id":1,"type":"transformer","ref":"T1","x":-200,"y":0,"rotation":0,"flipH":false,"value":"12V 1A","notes":"Step-down transformer"},
+    {"id":2,"type":"diode","ref":"D1","x":-60,"y":-60,"rotation":0,"flipH":false,"value":"1N4007","notes":"Top-left — anode to AC+"},
+    {"id":3,"type":"diode","ref":"D2","x":60,"y":-60,"rotation":0,"flipH":false,"value":"1N4007","notes":"Top-right — cathode to DC+"},
+    {"id":4,"type":"diode","ref":"D3","x":-60,"y":60,"rotation":180,"flipH":false,"value":"1N4007","notes":"Bottom-left — cathode to AC+"},
+    {"id":5,"type":"diode","ref":"D4","x":60,"y":60,"rotation":180,"flipH":false,"value":"1N4007","notes":"Bottom-right — anode to DC−"},
+    {"id":6,"type":"cap_elec","ref":"C1","x":180,"y":0,"rotation":90,"flipH":false,"value":"1000µF 50V","notes":"Filter cap — reduces ripple"},
+    {"id":7,"type":"resistor","ref":"R1","x":300,"y":0,"rotation":90,"flipH":false,"value":"1kΩ","notes":"Load resistor"},
+    {"id":8,"type":"gnd","ref":"GND1","x":180,"y":80,"rotation":0,"flipH":false,"value":"","notes":""},
+    {"id":9,"type":"gnd","ref":"GND2","x":300,"y":80,"rotation":0,"flipH":false,"value":"","notes":""},
+    {"id":10,"type":"vcc","ref":"VCC1","x":180,"y":-80,"rotation":0,"flipH":false,"value":"Vdc+","notes":""}
+  ],
+  "wires": [
+    {"x1":-60,"y1":-40,"x2":-60,"y2":-80},
+    {"x1":-60,"y1":-80,"x2":0,"y2":-80},
+    {"x1":60,"y1":-80,"x2":0,"y2":-80},
+    {"x1":60,"y1":-40,"x2":60,"y2":-80},
+    {"x1":-60,"y1":40,"x2":-60,"y2":80},
+    {"x1":-60,"y1":80,"x2":0,"y2":80},
+    {"x1":60,"y1":40,"x2":60,"y2":80},
+    {"x1":60,"y1":80,"x2":0,"y2":80},
+    {"x1":-60,"y1":-40,"x2":-80,"y2":-40},
+    {"x1":-80,"y1":-40,"x2":-80,"y2":40},
+    {"x1":-80,"y1":40,"x2":-60,"y2":40},
+    {"x1":60,"y1":-40,"x2":120,"y2":-40},
+    {"x1":120,"y1":-40,"x2":180,"y2":-40},
+    {"x1":180,"y1":-40,"x2":180,"y2":-20},
+    {"x1":60,"y1":40,"x2":120,"y2":40},
+    {"x1":120,"y1":40,"x2":180,"y2":40},
+    {"x1":180,"y1":40,"x2":180,"y2":20},
+    {"x1":180,"y1":-40,"x2":300,"y2":-40},
+    {"x1":300,"y1":-40,"x2":300,"y2":-20},
+    {"x1":180,"y1":40,"x2":300,"y2":40},
+    {"x1":300,"y1":40,"x2":300,"y2":20}
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "name": "NPN Transistor Switch",
+  "description": "NPN BJT as saturated switch driving a relay coil. Base resistor R1 limits IB. D1 (flyback diode) protects transistor from relay coil back-EMF. R2 is base pull-down to ensure off-state.",
+  "notes": "Choose Q1 with IC > relay coil current. Vce(sat) ≈ 0.2V. IB = (Vin − 0.7) / R1. For saturation: IB > IC/hFE. With 2N2222 (hFE≥100), IC=50mA coil: IB min = 0.5mA, so R1 = (5V−0.7V)/1mA = 4.3kΩ max. Use 1kΩ for margin. D1 = 1N4148 or 1N4007 across relay coil, cathode to V+.",
+  "components": [
+    {"id":1,"type":"npn","ref":"Q1","x":0,"y":0,"rotation":0,"flipH":false,"value":"2N2222","notes":"NPN switch — 2N2222 or similar"},
+    {"id":2,"type":"resistor","ref":"R1","x":-100,"y":0,"rotation":0,"flipH":false,"value":"1kΩ","notes":"Base current limiter"},
+    {"id":3,"type":"resistor","ref":"R2","x":-60,"y":60,"rotation":90,"flipH":false,"value":"10kΩ","notes":"Base pull-down — ensures off state"},
+    {"id":4,"type":"relay","ref":"K1","x":60,"y":-60,"rotation":0,"flipH":false,"value":"5V SPDT","notes":"Relay coil — connect to collector"},
+    {"id":5,"type":"diode","ref":"D1","x":60,"y":-100,"rotation":90,"flipH":false,"value":"1N4148","notes":"Flyback diode — cathode to V+, anode to collector"},
+    {"id":6,"type":"vcc","ref":"VCC1","x":60,"y":-140,"rotation":0,"flipH":false,"value":"+5V","notes":"Relay supply"},
+    {"id":7,"type":"vcc","ref":"VIN","x":-140,"y":0,"rotation":0,"flipH":false,"value":"CTL","notes":"Logic control input"},
+    {"id":8,"type":"gnd","ref":"GND1","x":20,"y":80,"rotation":0,"flipH":false,"value":"","notes":""}
+  ],
+  "wires": []
+}

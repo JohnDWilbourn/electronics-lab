@@ -551,11 +551,14 @@ const COMPONENT_LIBRARY = [
 
   // ── POWER ────────────────────────────────────────────────────────────────
 
-  { cat:'POWER', type:'vcc', label:'VCC / +V', sub:'P', w:20, h:30,
-    pins:[{num:1,name:'VCC',x:0,y:15}], draw: drawVCC },
+  { cat:'POWER', type:'vcc', label:'VCC / +V', sub:'P', w:20, h:40,
+    pins:[{num:1,name:'VCC',x:0,y:18}], draw: drawVCC },
 
-  { cat:'POWER', type:'gnd', label:'GND', sub:'P', w:20, h:30,
-    pins:[{num:1,name:'GND',x:0,y:-15}], draw: drawGND },
+  { cat:'POWER', type:'gnd', label:'GND', sub:'P', w:20, h:40,
+    pins:[{num:1,name:'GND',x:0,y:-18}], draw: drawGND },
+
+  { cat:'POWER', type:'agnd', label:'AGND', sub:'P', w:20, h:40,
+    pins:[{num:1,name:'AGND',x:0,y:-18}], draw: drawAGND },
 
   { cat:'POWER', type:'battery', label:'Battery', sub:'BT', w:30, h:50,
     pins:[{num:1,name:'+',x:0,y:-25},{num:2,name:'−',x:0,y:25}],
